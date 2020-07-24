@@ -19,11 +19,11 @@ const assistantId = '303b47ca-b014-4194-942a-e2c2b1070272';
 
 app.post('/create-session/', (req, res) => {
     watsonAssistant.createSession({ assistantId: assistantId })
-        .then(response => {
-            res.json(response.result);
+        .then(sessionResponse => {
+            return initConversation(sessionResponse, res);
         })
         .catch(err => {
-            res.json(err);
+            return res.json(err);
         });
 });
 
@@ -31,8 +31,7 @@ app.post('/message/', (req, res) => {
     const { message, session_id } = req.body;
 
     if (!session_id) {
-        res.json('session_id must be present!');
-        return;
+        return res.json('session_id must be present!');
     }
 
     const params = {
@@ -45,11 +44,29 @@ app.post('/message/', (req, res) => {
     };
 
     watsonAssistant.message(params).then(response => {
-        res.json(response.result);
+        return res.json(response.result);
     }).catch(err => {
-        res.json(err);
+        return res.json(err);
     });
 });
+
+function initConversation(sessionResponse, postResponse) {
+    const params = {
+        assistantId: assistantId,
+        sessionId: sessionResponse.result.session_id,
+        input: {
+            'message_type': 'text',
+            'text': ''
+        },
+    };
+
+    watsonAssistant.message(params).then(messageResponse => {
+        messageResponse.result.output['session_id'] = sessionResponse.result.session_id;
+        return postResponse.json(messageResponse.result);
+    }).catch(err => {
+        return postResponse.json(err);
+    });
+}
 
 app.listen(3000, () => {
     console.log('API Running...');
