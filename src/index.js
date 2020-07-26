@@ -29,6 +29,10 @@ app.post("/create-session/", (req, res) => {
     });
 });
 
+app.get("/", (req, res) => {
+  return res.json("working");
+});
+
 app.post("/message/", (req, res) => {
   const { message, session_id } = req.body;
 
