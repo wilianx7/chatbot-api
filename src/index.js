@@ -27,10 +27,13 @@ app.post("/create-session/", (req, res) => {
     .catch((err) => {
       return res.json(err);
     });
+<<<<<<< HEAD
 });
 
 app.get("/", (req, res) => {
   return res.json("working");
+=======
+>>>>>>> 1cdbb7c3ae4f19e3c393d15203776d35b90bbca7
 });
 
 app.post("/message/", (req, res) => {
