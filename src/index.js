@@ -3,9 +3,11 @@ const AssistantV2 = require("ibm-watson/assistant/v2");
 const { IamAuthenticator } = require("ibm-watson/auth");
 const app = express();
 const bodyParser = require("body-parser");
+const cors = require('cors')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 
 const watsonAssistant = new AssistantV2({
   version: "2020-07-21",
@@ -14,6 +16,7 @@ const watsonAssistant = new AssistantV2({
   }),
   url:
     "https://api.us-south.assistant.watson.cloud.ibm.com/instances/3e247e6c-8e35-4afe-80d9-29937cd2ea65",
+  disableSslVerification: true
 });
 
 const assistantId = "303b47ca-b014-4194-942a-e2c2b1070272";
@@ -27,13 +30,10 @@ app.post("/create-session/", (req, res) => {
     .catch((err) => {
       return res.json(err);
     });
-<<<<<<< HEAD
 });
 
 app.get("/", (req, res) => {
-  return res.json("working");
-=======
->>>>>>> 1cdbb7c3ae4f19e3c393d15203776d35b90bbca7
+  return res.json("API Running...");
 });
 
 app.post("/message/", (req, res) => {
